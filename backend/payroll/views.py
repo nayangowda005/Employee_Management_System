@@ -77,7 +77,7 @@ class PayslipPdfView(APIView):
         table = Table(details, colWidths=[90, 160, 90, 160])
         table.setStyle(TableStyle([('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#d9e4e1')), ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#eef5f3')), ('PADDING', (0, 0), (-1, -1), 8)]))
         story.extend([table, Spacer(1, 24)])
-        earnings = Table([['Description', 'Amount'], ['Basic salary', f'${payroll.basic_salary:,.2f}'], ['Allowances', f'${payroll.allowances:,.2f}'], ['Deductions', f'-${payroll.deductions:,.2f}'], ['Net salary', f'${payroll.net_salary:,.2f}']], colWidths=[360, 140])
+        earnings = Table([['Description', 'Amount'], ['Basic salary', f'INR {payroll.basic_salary:,.2f}'], ['Allowances', f'INR {payroll.allowances:,.2f}'], ['Deductions', f'-INR {payroll.deductions:,.2f}'], ['Net salary', f'INR {payroll.net_salary:,.2f}']], colWidths=[360, 140])
         earnings.setStyle(TableStyle([('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#d9e4e1')), ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#12343b')), ('TEXTCOLOR', (0, 0), (-1, 0), colors.white), ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#e4f1ed')), ('ALIGN', (1, 0), (1, -1), 'RIGHT'), ('PADDING', (0, 0), (-1, -1), 9)]))
         story.extend([earnings, Spacer(1, 20), Paragraph('This is a computer-generated payslip and does not require a signature.', styles['Normal'])])
         document.build(story)

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.forms import UserCreationForm
 
+from .forms import AdminUserChangeForm
 from .models import EmployeeProfile, User
 
 
@@ -19,6 +20,7 @@ class AdminUserCreationForm(UserCreationForm):
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     add_form = AdminUserCreationForm
+    form = AdminUserChangeForm
     list_display = ('username', 'email', 'role', 'approval_status', 'is_active')
     list_filter = ('role', 'approval_status', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')

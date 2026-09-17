@@ -11,7 +11,7 @@ import EmployeeDashboardPage from './EmployeeDashboardPage'
 import DepartmentsPage from './DepartmentsPage'
 import SettingsPage from './SettingsPage'
 import AdminPayrollPage from './AdminPayrollPage'
-import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, ClipboardCheck, Clock3, DollarSign, FileText, LayoutDashboard, Menu, Megaphone, Search, Settings, Users, X } from 'lucide-react'
+import { Bell, BriefcaseBusiness, CalendarDays, ChevronDown, ClipboardCheck, Clock3, FileText, IndianRupee, LayoutDashboard, Menu, Megaphone, Search, Settings, Users, X } from 'lucide-react'
 
 const navItems = [
   { label: 'Overview', icon: LayoutDashboard, to: '/dashboard' },
@@ -19,7 +19,7 @@ const navItems = [
   { label: 'Departments', icon: BriefcaseBusiness, to: '/departments', adminOnly: true },
   { label: 'Leave', icon: CalendarDays, to: '/leave' },
   { label: 'Attendance', icon: Clock3, to: '/attendance' },
-  { label: 'Payroll', icon: DollarSign, to: '/payroll' },
+  { label: 'Payroll', icon: IndianRupee, to: '/payroll' },
   { label: 'Announcements', icon: Megaphone, to: '/announcements' },
 ]
 
@@ -43,6 +43,7 @@ function App() {
 
 function Application() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [workspaceOpen, setWorkspaceOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const currentUser = JSON.parse(localStorage.getItem('peopleos_user') || 'null')
@@ -72,9 +73,18 @@ function Application() {
     <div className="app-shell">
       <aside className={`sidebar ${mobileOpen ? 'is-open' : ''}`}>
         <div className="brand"><span className="brand-mark"><BriefcaseBusiness size={18} /></span><span>PeopleOS</span></div>
-        <div className="workspace-switcher"><div><small>Workspace</small><strong>Northstar Labs</strong></div><ChevronDown size={16} /></div>
+        <div className="workspace-menu">
+          <button className="workspace-switcher" type="button" aria-expanded={workspaceOpen} onClick={() => setWorkspaceOpen(open => !open)}>
+            <span><small>Current workspace</small><strong>Northstar Labs</strong></span>
+            <ChevronDown size={16} className={workspaceOpen ? 'chevron-open' : ''} />
+          </button>
+          {workspaceOpen && <div className="workspace-popover">
+            <div className="workspace-option"><span className="workspace-status" /> <span><strong>Northstar Labs</strong><small>Active workspace</small></span></div>
+            <NavLink to="/settings" onClick={() => setWorkspaceOpen(false)}><Settings size={15} /> Workspace settings</NavLink>
+          </div>}
+        </div>
         <p className="nav-label">Workspace</p>
-        <nav>{navItems.filter(item => !item.adminOnly || currentUser?.role === 'ADMIN').map(({ label, icon: Icon, to }) => { const target = currentUser?.role === 'EMPLOYEE' && to === '/dashboard' ? '/employee/dashboard' : to; return <NavLink key={target} to={target} onClick={() => setMobileOpen(false)} className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}><Icon size={18} /><span>{label}</span>{label === 'Leave' && <span className="nav-count">4</span>}</NavLink> })}</nav>
+        <nav>{navItems.filter(item => !item.adminOnly || currentUser?.role === 'ADMIN').map(({ label, icon: Icon, to }) => { const target = currentUser?.role === 'EMPLOYEE' && to === '/dashboard' ? '/employee/dashboard' : to; return <NavLink key={target} to={target} onClick={() => setMobileOpen(false)} className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}><Icon size={18} /><span>{label}</span></NavLink> })}</nav>
         <div className="sidebar-bottom"><NavLink to="/settings" className="nav-link"><Settings size={18} /><span>Settings</span></NavLink><NavLink to="/settings" className="user-mini"><div className="avatar small">{currentUser?.first_name?.[0] || currentUser?.username?.[0] || 'U'}{currentUser?.last_name?.[0] || ''}</div><div><strong>{currentUser ? `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || currentUser.username : 'User'}</strong><small>{currentUser?.role === 'ADMIN' ? 'Administrator' : 'Employee'}</small></div><ChevronDown size={15} /></NavLink></div>
       </aside>
       {mobileOpen && <button className="scrim" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
