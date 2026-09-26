@@ -2,6 +2,15 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BriefcaseBusiness, Users } from 'lucide-react'
 
+function readError(requestError, fallback) {
+  const data = requestError.response?.data
+  if (typeof data === 'string') return data
+  if (!data) return fallback
+  if (typeof data.detail === 'string') return data.detail
+  const messages = Object.values(data).flat().filter(message => typeof message === 'string')
+  return messages[0] || fallback
+}
+
 const copy = {
   '/': ['People operations, with more human clarity.', 'One calm workspace for your people, payroll, leave, and everyday work.'],
   '/about': ['A better rhythm for growing teams.', 'PeopleOS brings the operational details of work into one considered place.'],
@@ -27,7 +36,7 @@ export default function PublicPage({ path, onLogin, onAuthenticate, onRegister }
         await onRegister({ username: formData.get('username'), email: formData.get('email'), full_name: formData.get('full_name'), password: formData.get('password') })
       }
     } catch (requestError) {
-      setError(requestError.response?.data?.detail || 'Unable to sign in. Check your credentials.')
+      setError(readError(requestError, isLogin ? 'Unable to sign in. Check your credentials.' : 'Unable to create your account. Review the details and try again.'))
     }
   }
 
